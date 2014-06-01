@@ -2,7 +2,7 @@
 
 use strict;
 
-=head1 randomWordList.pl
+=head1 Random Word List
 
 This script is designed to generate a cryptogrphic-quality random list
 of words on Linux and Linux-like systems. It filters your system's
@@ -11,14 +11,15 @@ them with /dev/random.
 
 The goal is to produce an unbiased list of words that you can choose
 from in order to construct high quality AND memorable passwords. This
-is the "correcthorsebatterystaple" mechanism popularized by XKCD:
-
-     https://xkcd.com/936/>.
+is the "correcthorsebatterystaple" mechanism popularized L<by
+XKCD|https://xkcd.com/936/>.
 
 The strength of this method will be diminished if the words chosen are
 not picked randomly, however. Humans are generally terrible at
 randomizing information. Just "thinking of good words to use" will
-generally end up selecting from a dangerously small pool of words.
+generally end up selecting from a dangerously small pool of
+words. This script provides a more objective, random selection of
+words to choose from in your password design.
 
 =head2 Usage
 
@@ -42,56 +43,47 @@ appropriate.
 
 The default dictionary used by your system is likely a good choice:
 
- 1. You want to generate a password that you can remember. There are
-    'expanded' dictionaries available with more words (greater
-    entropy) but these extra words are often quite obscure. If a word
-    is unfamiliar ("rancescent"? "nudzhed"?!?), it is harder to
-    remember the correct spelling or build a meaningful memory device
-    for recalling it.
+1. You want to generate a password that you can remember. There are
+   'expanded' dictionaries available with more words (greater entropy)
+   but these extra words are often quite obscure. If a word is
+   unfamiliar ("rancescent"? "nudzhed"?!?), it is harder to remember
+   the correct spelling or build a meaningful memory device for
+   recalling it.
 
- 2. On my system, the default dictionary weighs in at ~40,000 words
-    (3-8 letters), which means two bytes are sufficient to cover all
-    entries; This will be 50% faster at pulling information from
-    /dev/random than a dictionary with more than 65,535 words (3
-    bytes)
+2. On my system, the default dictionary weighs in at ~40,000 words
+   (3-8 letters), which means two bytes are sufficient to cover all
+   entries; This will be 50% faster at pulling information from
+   /dev/random than a dictionary with more than 65,535 words (3 bytes)
 
 =head2 Some Observations
 
-  1. I am not a cryptographer. I may have made some dangerous
-     presumptions here. I believe this code should generate high
-     quality randomization. I am happy to hear feedback on flaws or
-     suggestions for improvement.
+1. I am not a cryptographer. I may have made some dangerous
+   presumptions here. I believe this code should generate high
+   quality randomization. I am happy to hear feedback on flaws or
+   suggestions for improvement.
 
-  2. By choosing words you are reducing the entropy. I believe this is
-     unavoidable in order to assure a reasonably "rememberable"
-     phrase.
+2. By choosing words you are reducing the entropy. I believe this is
+   unavoidable in order to assure a reasonably "rememberable" phrase.
 
-  3. Randall Munroe (XKCD author) advises against using permuted
-     passwords (substituting odd characters or changing case), as it
-     makes the result harder to remember. However, if you've got the
-     memory, case permutation and special character substitution will
-     GREATLY increase the strength of any password you design. I am
-     intentionally not automatically 'munging' passwords in this
-     script; you should come up with simple rules yourself. For some
-     ideas, see:
+3. Randall Munroe (XKCD author) advises against using permuted
+   passwords (substituting odd characters or changing case), as it
+   makes the result harder to remember. However, if you've got the
+   memory (gray matter wet-ware, not RAM), case permutation and
+   special character substitution will GREATLY increase the strength
+   of any password you design. I am intentionally not automatically
+   'munging' passwords in this script; you should come up with simple
+   rules yourself. For some ideas, see L<Munged
+   passwords|https://en.wikipedia.org/wiki/Munged_password>.
 
-         https://en.wikipedia.org/wiki/Munged_password
-
-  4. If you're worried about your memory, I strongly recommend an
-     encrypted password store. Personally, I am quite fond of
-     KeePassX:
-
-         https://www.keepassx.org/downloads
-
-     Password managers do represent a single point of failure; if an
-     attacker compromises your password database, you will lose ALL
-     the credentials stored there (barring second factor
-     authentication). For this reason, the manger's master password
-     should be VERY strong, and the password file should probably not
-     be stored on an open network. More information:
-
-         https://en.wikipedia.org/wiki/Password_manager
-         https://en.wikipedia.org/wiki/List_of_password_managers
+4. If you're worried about your memory, I strongly recommend an
+   encrypted password store. Personally, I am quite fond of
+   L<KeePassX|https://www.keepassx.org/downloads>.  Password managers
+   do represent a single point of failure; if an attacker compromises
+   your password database, you will lose ALL the credentials stored
+   there (barring second factor authentication). For this reason, the
+   manger's master password should be VERY strong, and the password
+   file should probably not be stored on an open network. More
+   information L<generally on password managers|https://en.wikipedia.org/wiki/Password_manager> and for L<specific examples|https://en.wikipedia.org/wiki/List_of_password_managers> are on Wikipedia.
 
 =cut
 
@@ -169,12 +161,19 @@ unless ($listLen) {
 }
 
 # How many bits long is the list?
-my $blen = int(log($listLen) / log(2)) + 1;
+my $blen    = log($listLen) / log(2);
+my $entropy = int($blen);
+if ($blen > $entropy) {
+    # We need to round up in terms of fully sampling from the list
+    $blen = $entropy + 1;
+}
+
 # How many bytes would cover that?
 my $byteNum = int(0.99 + $blen / 8);
 
-my $note = sprintf("\nRecovered %d words of length %d-%d\n  Source: %s\n",
-                   $listLen, $min, $max, $file);
+my $note = sprintf
+    ("\nRecovered %d words of length %d-%d. Entropy = %d bits/word\n".
+     "  Source: %s\n", $listLen, $min, $max, $entropy, $file);
 
 if ($hardcore) {
     $note .= sprintf("  %s will be read %d bytes at a time for enhanced randomness\n", $randSrc, $byteNum);
@@ -188,41 +187,38 @@ warn $note;
 =head3 List Bias
 
 Filtering the dictionary for size and removing entries that are not
-purely alphabetical gives a word list of size $listLen. srand() is
-then initialized with a 64-bit number from /dev/random, and the list
-then sorted by rand(). At this point, the list is not
+purely alphabetical gives a word list of size C<$listLen>. C<srand()>
+is then initialized with a 64-bit number from /dev/random, and the
+list then sorted by C<rand()>. At this point, the list is NOT
 cryptographically random.
 
 Words are then drawn off from the list by extracting more random bits
 from /dev/random. These numbers will be in the range of
-0-(256^$byteNum-1), where $byteNum is chosen such that the maximum
-bound is at least as large as $listLen (so $byteNum will usually be 2,
-and sometimes 3 for large lists). However, it is unlikely to be
-*exactly* as large as $listLen. This means that the integer generated
-from /dev/random needs to be scaled/translated into a value from
-1-$listLen, such that all values have an equal likelihood of being
-chosen.
+C<0-(256^$byteNum-1)>, where C<$byteNum> is chosen such that the
+maximum bound is at least as large as C<$listLen> (so C<$byteNum> will
+usually be 2, and sometimes 3 for large lists). However, it is
+unlikely to be *exactly* as large as C<$listLen>. This means that the
+integer generated from /dev/random needs to be scaled/translated into
+a value from C<1-$listLen>, such that all values have an equal
+likelihood of being chosen.
 
 I know of two methods that are biased:
 
-  1. Using a simple modulus ($randomNumber % $listLen). This will
-     result in entries at the front of the list being selected more
-     often (due to the "wrapping" effect of the modulus).
+1. Using a simple modulus (C<$randomNumber % $listLen>). This will
+   result in entries at the front of the list being selected more
+   often (due to the "wrapping" effect of the modulus).
 
-  2. Scaling ala:
-
-     $ind = int( $listLen * $devRandVal / 256 ** $byteNum )
-
-     These values will result in some (predictable, given $listLen)
-     entries being picked n times, and all other entries being picked
-     n+1 times (picket fence).
+2. Scaling ala C<$ind = int( $listLen * $devRandVal / 256 ** $byteNum )>.
+   These values will result in some (predictable, given $listLen)
+   entries being picked C<n> times, and all other entries being picked
+   C<n+1> times (picket fence).
 
 The method I am using is to use a running sum of the decimal values
 generated by /dev/random, and will use modulus on that. It should
 avoid bias at the front of the list, and will not be affected by
 scaling. However, it means that the (n+1)th word is related to the nth
 word by the addition of a random value to this running sum. That
-relationship is, hopefully, random, but it still makes me
+relationship is - hopefully - random, but it still makes me
 uncomfortable.
 
 =cut
