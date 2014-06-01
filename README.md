@@ -52,41 +52,32 @@ The default dictionary used by your system is likely a good choice:
 
 ## Some Observations
 
-    1. I am not a cryptographer. I may have made some dangerous
-       presumptions here. I believe this code should generate high
-       quality randomization. I am happy to hear feedback on flaws or
-       suggestions for improvement.
+1\. I am not a cryptographer. I may have made some dangerous
+   presumptions here. I believe this code should generate high
+   quality randomization. I am happy to hear feedback on flaws or
+   suggestions for improvement.
 
-    2. By choosing words you are reducing the entropy. I believe this is
-       unavoidable in order to assure a reasonably "rememberable"
-       phrase.
+2\. By choosing words you are reducing the entropy. I believe this is
+   unavoidable in order to assure a reasonably "rememberable" phrase.
 
-    3. Randall Munroe (XKCD author) advises against using permuted
-       passwords (substituting odd characters or changing case), as it
-       makes the result harder to remember. However, if you've got the
-       memory, case permutation and special character substitution will
-       GREATLY increase the strength of any password you design. I am
-       intentionally not automatically 'munging' passwords in this
-       script; you should come up with simple rules yourself. For some
-       ideas, see:
+3\. Randall Munroe (XKCD author) advises against using permuted
+   passwords (substituting odd characters or changing case), as it
+   makes the result harder to remember. However, if you've got the
+   memory, case permutation and special character substitution will
+   GREATLY increase the strength of any password you design. I am
+   intentionally not automatically 'munging' passwords in this script;
+   you should come up with simple rules yourself. For some ideas, see
+   [Munged passwords](https://en.wikipedia.org/wiki/Munged_password).
 
-           https://en.wikipedia.org/wiki/Munged_password
-
-    4. If you're worried about your memory, I strongly recommend an
-       encrypted password store. Personally, I am quite fond of
-       KeePassX:
-
-           https://www.keepassx.org/downloads
-
-       Password managers do represent a single point of failure; if an
-       attacker compromises your password database, you will lose ALL
-       the credentials stored there (barring second factor
-       authentication). For this reason, the manger's master password
-       should be VERY strong, and the password file should probably not
-       be stored on an open network. More information:
-
-           https://en.wikipedia.org/wiki/Password_manager
-           https://en.wikipedia.org/wiki/List_of_password_managers
+4\. If you're worried about your memory, I strongly recommend an
+   encrypted password store. Personally, I am quite fond of
+   [KeePassX](https://www.keepassx.org/downloads).  Password managers
+   do represent a single point of failure; if an attacker compromises
+   your password database, you will lose ALL the credentials stored
+   there (barring second factor authentication). For this reason, the
+   manger's master password should be VERY strong, and the password
+   file should probably not be stored on an open network. More
+   information [generally on password managers](https://en.wikipedia.org/wiki/Password_manager) and for [specific examples](https://en.wikipedia.org/wiki/List_of_password_managers) are on Wikipedia.
 
 ### List Bias
 
