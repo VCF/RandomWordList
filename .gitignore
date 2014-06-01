@@ -1,0 +1,31 @@
+# http://git-scm.com/book/en/Git-Basics-Recording-Changes-to-the-Repository
+# https://help.github.com/articles/ignoring-files
+
+# Keep out emacs temp files
+*~
+
+# Lock files
+*#
+.#*
+
+# Suggested by GitHub:
+/blib/
+/.build/
+_build/
+cover_db/
+inc/
+Build
+!Build/
+Build.bat
+.last_cover_stats
+/Makefile
+/Makefile.old
+/MANIFEST.bak
+/META.yml
+/META.json
+/MYMETA.*
+nytprof.out
+/pm_to_blib
+*.o
+*.bs
+
