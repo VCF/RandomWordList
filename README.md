@@ -7,9 +7,8 @@ them with /dev/random.
 
 The goal is to produce an unbiased list of words that you can choose
 from in order to construct high quality AND memorable passwords. This
-is the "correcthorsebatterystaple" mechanism popularized by XKCD:
-
-     L<https://xkcd.com/936/>
+is the "correcthorsebatterystaple" mechanism popularized [by
+XKCD](https://xkcd.com/936/).
 
 The strength of this method will be diminished if the words chosen are
 not picked randomly, however. Humans are generally terrible at
