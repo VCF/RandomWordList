@@ -1,4 +1,4 @@
-# randomWordList.pl
+# Random Word List
 
 This script is designed to generate a cryptogrphic-quality random list
 of words on Linux and Linux-like systems. It filters your system's
@@ -37,30 +37,29 @@ appropriate.
 
 The default dictionary used by your system is likely a good choice:
 
-    1. You want to generate a password that you can remember. There are
-       'expanded' dictionaries available with more words (greater
-       entropy) but these extra words are often quite obscure. If a word
-       is unfamiliar ("rancescent"? "nudzhed"?!?), it is harder to
-       remember the correct spelling or build a meaningful memory device
-       for recalling it.
+1. You want to generate a password that you can remember. There are
+   'expanded' dictionaries available with more words (greater entropy)
+   but these extra words are often quite obscure. If a word is
+   unfamiliar ("rancescent"? "nudzhed"?!?), it is harder to remember
+   the correct spelling or build a meaningful memory device for
+   recalling it.
 
-    2. On my system, the default dictionary weighs in at ~40,000 words
-       (3-8 letters), which means two bytes are sufficient to cover all
-       entries; This will be 50% faster at pulling information from
-       /dev/random than a dictionary with more than 65,535 words (3
-       bytes)
+2. On my system, the default dictionary weighs in at ~40,000 words
+   (3-8 letters), which means two bytes are sufficient to cover all
+   entries; This will be 50% faster at pulling information from
+   /dev/random than a dictionary with more than 65,535 words (3 bytes)
 
 ## Some Observations
 
-1\. I am not a cryptographer. I may have made some dangerous
+1. I am not a cryptographer. I may have made some dangerous
    presumptions here. I believe this code should generate high
    quality randomization. I am happy to hear feedback on flaws or
    suggestions for improvement.
 
-2\. By choosing words you are reducing the entropy. I believe this is
+2. By choosing words you are reducing the entropy. I believe this is
    unavoidable in order to assure a reasonably "rememberable" phrase.
 
-3\. Randall Munroe (XKCD author) advises against using permuted
+3. Randall Munroe (XKCD author) advises against using permuted
    passwords (substituting odd characters or changing case), as it
    makes the result harder to remember. However, if you've got the
    memory, case permutation and special character substitution will
@@ -69,7 +68,7 @@ The default dictionary used by your system is likely a good choice:
    you should come up with simple rules yourself. For some ideas, see
    [Munged passwords](https://en.wikipedia.org/wiki/Munged_password).
 
-4\. If you're worried about your memory, I strongly recommend an
+4. If you're worried about your memory, I strongly recommend an
    encrypted password store. Personally, I am quite fond of
    [KeePassX](https://www.keepassx.org/downloads).  Password managers
    do represent a single point of failure; if an attacker compromises
